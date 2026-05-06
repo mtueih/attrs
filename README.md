@@ -43,9 +43,7 @@ C 语言*跨平台*、*跨编译器*、*全标准兼容* **属性抽象封装库
 | 布局    | `ATTRS_PACKED`, `ATTRS_CLEANUP`, `ATTRS_MAY_ALIAS`                           |
 | 工具    | `ATTRS_LIKELY`, `ATTRS_UNLIKELY`, `ATTRS_UNREACHABLE`, `ATTRS_STATIC_ASSERT` |
 
-## 编译 & 安装
-
-### 使用 CMake 安装
+## 安装
 
 **环境要求**：
 
@@ -65,10 +63,6 @@ cmake --build .
 cmake --install .
 ```
 
-### 手动安装
-
-只需将 `include/attrs.h` 复制到项目的包含目录中，并在源文件中包含它。
-
 ## 使用
 
 ### CMake 集成
@@ -80,21 +74,26 @@ find_package(attrs REQUIRED)
 target_link_libraries(your_target PRIVATE attrs::attrs)
 ```
 
-### 作为 Git 子模块使用
+### CMake FetchContent
 
-```bash
-# 添加为 git 子模块
-git submodule add https://github.com/mtueih/attrs.git deps/attrs
+```cmake
+include(FetchContent)
 
-# 在你的 CMakeLists.txt 中
-add_subdirectory(deps/attrs)
-target_link_libraries(your_target PRIVATE attrs::attrs)
+FetchContent_Declare(
+	attrs
+	GIT_REPOSITORY https://github.com/mtueih/attrs.git
+	GIT_TAG main
+)
+
+FetchContent_MakeAvailable(attrs)
+
+target_link_libraries(dstr_adt PRIVATE attrs::attrs)
 ```
 
 ## 示例
 
 ```c
-#include "attrs.h"
+#include <attrs.h>
 
 /* 1. 分配器：返回 64 字节对齐内存，不返回 NULL */
 ATTRS_MALLOC ATTRS_ALLOC_SIZE(1) ATTRS_ALLOC_ALIGN(1)
